@@ -34,12 +34,12 @@ export const ZSearchCard: React.FC<{ property: SearchProperty, onClick?: () => v
       <div className="p-4 flex flex-col pt-3">
         {/* Price */}
         <h3 className="text-[24px] font-bold text-[#2F4156] leading-none flex items-baseline gap-1 mb-1.5">
-          ${property.price.toLocaleString()} <span className="text-[16px] text-[#567C8D] font-normal">{t('/year')}</span>
+          RF {property.price.toLocaleString()} <span className="text-[16px] text-[#567C8D] font-normal">{t('/year')}</span>
         </h3>
         
         {/* Title */}
         <h4 className="text-[17px] text-[#2F4156] font-medium leading-tight mb-2">
-          {title}, Villa
+          {title}, {t('Villa')}
         </h4>
         
         {/* Location */}

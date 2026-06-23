@@ -11,6 +11,7 @@ export interface Property {
   badgeText?: string;
   badgeType?: 'orange' | 'red';
   image: string;
+  owner_id?: string;
 }
 
 export interface SearchProperty {
@@ -23,4 +24,7 @@ export interface SearchProperty {
   images: string[];
   lat: number;
   lng: number;
+  property_type?: string;
+  status?: string;
+  owner_id?: string;
 }

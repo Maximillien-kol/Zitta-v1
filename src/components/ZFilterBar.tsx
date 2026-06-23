@@ -2,10 +2,39 @@ import { Search, X, ChevronDown, ChevronUp, SlidersHorizontal, Check } from 'luc
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initialFilters = {} }: { searchType?: string, onSearchTypeChange?: (val: string) => void, initialFilters?: any }) {
+export interface FilterState {
+  searchText: string;
+  status: string;
+  price: string;
+  beds: string;
+  propertyType: string;
+  maxHoa: string;
+  listingTypes: string[];
+  listingStatuses: string[];
+  tours: string[];
+  parkingSpots: string;
+}
+
+export const defaultFilterState: FilterState = {
+  searchText: '',
+  status: 'For sale',
+  price: 'Any price',
+  beds: 'Any',
+  propertyType: 'Any type',
+  maxHoa: 'Any',
+  listingTypes: ['Owner posted', 'Agent listed', 'New construction', 'Foreclosures', 'Auctions'],
+  listingStatuses: [],
+  tours: [],
+  parkingSpots: 'Any'
+};
+
+export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initialFilters = {}, onFiltersChange }: { searchType?: string, onSearchTypeChange?: (val: string) => void, initialFilters?: any, onFiltersChange?: (filters: FilterState) => void }) {
   const { t } = useTranslation();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Search text
+  const [searchText, setSearchText] = useState('');
 
   // Filter local states
   const [tempStatus, setTempStatus] = useState(searchType !== 'Any status' ? searchType : 'For sale');
@@ -46,6 +75,24 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Emit all filters whenever they change
+  const emitFilters = (overrides: Partial<FilterState> = {}) => {
+    const current: FilterState = {
+      searchText,
+      status: searchType,
+      price,
+      beds,
+      propertyType: type,
+      maxHoa,
+      listingTypes: [...listingTypes],
+      listingStatuses: [...listingStatuses],
+      tours: [...tours],
+      parkingSpots,
+      ...overrides
+    };
+    onFiltersChange?.(current);
+  };
+
   const toggleDropdown = (name: string) => {
     if (openDropdown === name) {
       setOpenDropdown(null);
@@ -56,11 +103,11 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
       if (name === 'beds') setTempBeds(beds);
       if (name === 'type') setTempType(type);
       if (name === 'filters') {
-         setTempMaxHoa(maxHoa);
-         setTempListingTypes([...listingTypes]);
-         setTempListingStatuses([...listingStatuses]);
-         setTempTours([...tours]);
-         setTempParkingSpots(parkingSpots);
+        setTempMaxHoa(maxHoa);
+        setTempListingTypes([...listingTypes]);
+        setTempListingStatuses([...listingStatuses]);
+        setTempTours([...tours]);
+        setTempParkingSpots(parkingSpots);
       }
     }
   };
@@ -68,38 +115,54 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
   const applyStatus = () => {
     onSearchTypeChange?.(tempStatus);
     setOpenDropdown(null);
+    emitFilters({ status: tempStatus });
   };
-  
+
   const applyPrice = () => {
     setPrice(tempPrice);
     setOpenDropdown(null);
+    emitFilters({ price: tempPrice });
   };
 
   const applyBeds = () => {
     setBeds(tempBeds);
     setOpenDropdown(null);
+    emitFilters({ beds: tempBeds });
   };
 
   const applyType = () => {
     setType(tempType);
     setOpenDropdown(null);
+    emitFilters({ propertyType: tempType });
   };
 
   const applyFilters = () => {
-     setMaxHoa(tempMaxHoa);
-     setListingTypes([...tempListingTypes]);
-     setListingStatuses([...tempListingStatuses]);
-     setTours([...tempTours]);
-     setParkingSpots(tempParkingSpots);
-     setOpenDropdown(null);
+    setMaxHoa(tempMaxHoa);
+    setListingTypes([...tempListingTypes]);
+    setListingStatuses([...tempListingStatuses]);
+    setTours([...tempTours]);
+    setParkingSpots(tempParkingSpots);
+    setOpenDropdown(null);
+    emitFilters({
+      maxHoa: tempMaxHoa,
+      listingTypes: [...tempListingTypes],
+      listingStatuses: [...tempListingStatuses],
+      tours: [...tempTours],
+      parkingSpots: tempParkingSpots
+    });
   };
 
   const resetFilters = () => {
-     setTempMaxHoa('Any');
-     setTempListingTypes(defaultListingTypes);
-     setTempListingStatuses([]);
-     setTempTours([]);
-     setTempParkingSpots('Any');
+    setTempMaxHoa('Any');
+    setTempListingTypes(defaultListingTypes);
+    setTempListingStatuses([]);
+    setTempTours([]);
+    setTempParkingSpots('Any');
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchText(value);
+    emitFilters({ searchText: value });
   };
 
   let activeFiltersCount = 0;
@@ -110,7 +173,7 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
   if (parkingSpots !== 'Any') activeFiltersCount++;
 
   const statusOptions = ['For sale', 'For rent', 'Sold'];
-  const priceOptions = ['Any price', 'Under $100k', '$100k - $300k', '$300k - $500k', '$500k - $1M', 'Over $1M'];
+  const priceOptions = ['Any price', 'Under RF 100k', 'RF 100k - RF 300k', 'RF 300k - RF 500k', 'RF 500k - RF 1M', 'Over RF 1M'];
   const bedsOptions = ['Any', '1+ Beds & Baths', '2+ Beds & Baths', '3+ Beds & Baths', '4+ Beds & Baths'];
   const typeOptions = ['Any type', 'Houses', 'Townhomes', 'Multi-family', 'Condos/Co-ops', 'Lots/Land'];
 
@@ -147,17 +210,21 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
 
   return (
     <div ref={containerRef} className="flex items-center w-full px-4 md:px-6 py-[10px] border-b border-[#F5EFEB] bg-[#FFFFFF] gap-2.5 overflow-visible relative">
-      
+
       {/* Search Input */}
       <div className="flex items-center border border-[#C8D9E6] rounded-lg px-3 py-1.5 flex-1 min-w-[220px] max-w-[550px] bg-[#FFFFFF] mr-1 shadow-[0_1px_2px_rgba(0,0,0,0.04)] h-[40px]">
-        <input 
-          type="text" 
-          defaultValue="NY" 
+        <input
+          type="text"
+          value={searchText}
+          onChange={(e) => handleSearchChange(e.target.value)}
+          placeholder={t('Search')}
           className="flex-1 outline-none text-[16px] text-[#2F4156] font-normal min-w-0 bg-transparent"
         />
-        <button className="flex items-center justify-center mr-2.5 text-white bg-[#567C8D] hover:bg-[#2F4156] rounded-full w-[18px] h-[18px] transition-colors">
-          <X size={12} strokeWidth={2.5} />
-        </button>
+        {searchText && (
+          <button onClick={() => handleSearchChange('')} className="flex items-center justify-center mr-2.5 text-white bg-[#567C8D] hover:bg-[#2F4156] rounded-full w-[18px] h-[18px] transition-colors">
+            <X size={12} strokeWidth={2.5} />
+          </button>
+        )}
         <button className="text-[#2F4156] hover:text-[#567C8D] transition-colors">
           <Search size={22} strokeWidth={2} />
         </button>
@@ -165,7 +232,7 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
 
       {/* For sale */}
       <div className="relative">
-        <button 
+        <button
           onClick={() => toggleDropdown('status')}
           className={`flex items-center gap-1.5 border px-4 h-[40px] rounded-lg whitespace-nowrap transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${openDropdown === 'status' ? 'border-[#0054d6] bg-[#e8f3ff] text-[#0054d6] ring-[1px] ring-[#0054d6]' : 'border-[#C8D9E6] bg-[#FFFFFF] text-[#2F4156] hover:bg-[#F5EFEB]'}`}
         >
@@ -186,7 +253,7 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
 
       {/* Price */}
       <div className="relative">
-        <button 
+        <button
           onClick={() => toggleDropdown('price')}
           className={`flex items-center gap-1.5 border px-4 h-[40px] rounded-lg whitespace-nowrap transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${openDropdown === 'price' ? 'border-[#0054d6] bg-[#e8f3ff] text-[#0054d6] ring-[1px] ring-[#0054d6]' : 'border-[#C8D9E6] bg-[#FFFFFF] text-[#2F4156] hover:bg-[#F5EFEB]'}`}
         >
@@ -207,7 +274,7 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
 
       {/* Beds & baths */}
       <div className="relative">
-        <button 
+        <button
           onClick={() => toggleDropdown('beds')}
           className={`flex items-center gap-1.5 border px-4 h-[40px] rounded-lg whitespace-nowrap transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${openDropdown === 'beds' ? 'border-[#0054d6] bg-[#e8f3ff] text-[#0054d6] ring-[1px] ring-[#0054d6]' : 'border-[#C8D9E6] bg-[#FFFFFF] text-[#2F4156] hover:bg-[#F5EFEB]'}`}
         >
@@ -228,7 +295,7 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
 
       {/* Property type */}
       <div className="relative">
-        <button 
+        <button
           onClick={() => toggleDropdown('type')}
           className={`flex items-center gap-1.5 border px-4 h-[40px] rounded-lg whitespace-nowrap transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${openDropdown === 'type' ? 'border-[#0054d6] bg-[#e8f3ff] text-[#0054d6] ring-[1px] ring-[#0054d6]' : 'border-[#C8D9E6] bg-[#FFFFFF] text-[#2F4156] hover:bg-[#F5EFEB]'}`}
         >
@@ -249,13 +316,12 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
 
       {/* Filters */}
       <div className="relative">
-        <button 
+        <button
           onClick={() => toggleDropdown('filters')}
-          className={`flex items-center gap-1.5 border px-4 h-[40px] rounded-lg whitespace-nowrap transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${
-            openDropdown === 'filters' || activeFiltersCount > 0
-              ? 'border-[#0054d6] bg-[#e8f3ff] text-[#0054d6] ring-[1px] ring-[#0054d6]' 
-              : 'border-[#C8D9E6] bg-[#FFFFFF] text-[#2F4156] hover:bg-[#F5EFEB]'
-          }`}
+          className={`flex items-center gap-1.5 border px-4 h-[40px] rounded-lg whitespace-nowrap transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)] ${openDropdown === 'filters' || activeFiltersCount > 0
+            ? 'border-[#0054d6] bg-[#e8f3ff] text-[#0054d6] ring-[1px] ring-[#0054d6]'
+            : 'border-[#C8D9E6] bg-[#FFFFFF] text-[#2F4156] hover:bg-[#F5EFEB]'
+            }`}
         >
           <SlidersHorizontal size={16} strokeWidth={2.5} />
           <span className="text-[15px] font-bold">{t('Filters')}</span>
@@ -268,61 +334,61 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
               <span className="font-bold text-[#2F4156] text-[16px]">{t('More Filters')}</span>
               <button className="text-[#2F4156] hover:text-[#0054d6]" onClick={() => setOpenDropdown(null)}><X size={20} /></button>
             </div>
-            
+
             <div className="p-5 overflow-y-auto flex-1 flex flex-col gap-6">
-               <div className="flex flex-col gap-2">
-                 <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Max HOA')}</span>
-                 <select 
-                   value={tempMaxHoa} 
-                   onChange={(e) => setTempMaxHoa(e.target.value)}
-                   className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
-                 >
-                   <option value="Any">Any</option>
-                   <option value="$100/mo">$100/mo</option>
-                   <option value="$200/mo">$200/mo</option>
-                   <option value="$300/mo">$300/mo</option>
-                 </select>
-               </div>
+              <div className="flex flex-col gap-2">
+                <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Max HOA')}</span>
+                <select
+                  value={tempMaxHoa}
+                  onChange={(e) => setTempMaxHoa(e.target.value)}
+                  className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
+                >
+                  <option value="Any">{t('Any')}</option>
+                  <option value="RF 100/mo">{t('RF 100/mo')}</option>
+                  <option value="RF 200/mo">{t('RF 200/mo')}</option>
+                  <option value="RF 300/mo">{t('RF 300/mo')}</option>
+                </select>
+              </div>
 
-               <div className="flex flex-col gap-1.5">
-                 <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing type')}</span>
-                 {allListingTypes.map(typ => (
-                   <CheckboxOption key={typ} label={typ} checked={tempListingTypes.includes(typ)} onChange={() => toggleArrayItem(tempListingTypes, setTempListingTypes, typ)} />
-                 ))}
-               </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing type')}</span>
+                {allListingTypes.map(typ => (
+                  <CheckboxOption key={typ} label={typ} checked={tempListingTypes.includes(typ)} onChange={() => toggleArrayItem(tempListingTypes, setTempListingTypes, typ)} />
+                ))}
+              </div>
 
-               <div className="flex flex-col gap-1.5">
-                 <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing status')}</span>
-                 {allListingStatuses.map(stat => (
-                   <CheckboxOption key={stat} label={stat} checked={tempListingStatuses.includes(stat)} onChange={() => toggleArrayItem(tempListingStatuses, setTempListingStatuses, stat)} />
-                 ))}
-               </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing status')}</span>
+                {allListingStatuses.map(stat => (
+                  <CheckboxOption key={stat} label={stat} checked={tempListingStatuses.includes(stat)} onChange={() => toggleArrayItem(tempListingStatuses, setTempListingStatuses, stat)} />
+                ))}
+              </div>
 
-               <div className="flex flex-col gap-1.5">
-                 <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Tours')}</span>
-                 {allTours.map(tour => (
-                   <CheckboxOption key={tour} label={tour} checked={tempTours.includes(tour)} onChange={() => toggleArrayItem(tempTours, setTempTours, tour)} />
-                 ))}
-               </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Tours')}</span>
+                {allTours.map(tour => (
+                  <CheckboxOption key={tour} label={tour} checked={tempTours.includes(tour)} onChange={() => toggleArrayItem(tempTours, setTempTours, tour)} />
+                ))}
+              </div>
 
-               <div className="flex flex-col gap-2">
-                 <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Parking spots')}</span>
-                 <select 
-                   value={tempParkingSpots} 
-                   onChange={(e) => setTempParkingSpots(e.target.value)}
-                   className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
-                 >
-                   <option value="Any">Any</option>
-                   <option value="1+ Spaces">1+ Spaces</option>
-                   <option value="2+ Spaces">2+ Spaces</option>
-                   <option value="3+ Spaces">3+ Spaces</option>
-                 </select>
-               </div>
+              <div className="flex flex-col gap-2">
+                <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Parking spots')}</span>
+                <select
+                  value={tempParkingSpots}
+                  onChange={(e) => setTempParkingSpots(e.target.value)}
+                  className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
+                >
+                  <option value="Any">{t('Any')}</option>
+                  <option value="1+ Spaces">{t('1+ Spaces')}</option>
+                  <option value="2+ Spaces">{t('2+ Spaces')}</option>
+                  <option value="3+ Spaces">{t('3+ Spaces')}</option>
+                </select>
+              </div>
             </div>
-            
+
             <div className="p-4 border-t border-[#E0E6ED] flex items-center justify-between bg-white sticky bottom-0 z-10">
-               <button onClick={resetFilters} className="text-[15px] font-bold text-[#0054d6] hover:underline px-2">{t('Reset all filters')}</button>
-               <button onClick={applyFilters} className="bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold px-8 py-2.5 rounded-xl transition-colors text-[15px]">{t('Apply')}</button>
+              <button onClick={resetFilters} className="text-[15px] font-bold text-[#0054d6] hover:underline px-2">{t('Reset all filters')}</button>
+              <button onClick={applyFilters} className="bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold px-8 py-2.5 rounded-xl transition-colors text-[15px]">{t('Apply')}</button>
             </div>
           </div>
         )}

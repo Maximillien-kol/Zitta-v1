@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, Check, Home, DollarSign, Building, TrendingUp, MapPin, Search, Compass, Users, Heart, Star, User, UsersRound, Baby, Home as HomeIcon, Zap, Shield, Coffee, Car, Wifi, Dog, Trees, Smartphone, Bell, Clock, Bot, MessageSquare, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-export function ZSignInPage({ onSignIn }: { onSignIn?: (filters?: any) => void }) {
+export function ZSignInPage({ onSignIn, onDashboardLogin, initialMode }: { onSignIn?: (filters?: any, authData?: any) => void, onDashboardLogin?: (email: string, password: string) => void, initialMode?: 'onboarding' | 'login' }) {
   const { t } = useTranslation();
-  const [mode, setMode] = useState<'onboarding' | 'login'>('onboarding');
+  const [mode, setMode] = useState<'onboarding' | 'login'>(initialMode || 'onboarding');
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState('');
@@ -152,6 +152,11 @@ export function ZSignInPage({ onSignIn }: { onSignIn?: (filters?: any) => void }
         propertyType: propertyType[0] || 'Any type',
         beds: beds || 'Any',
         price: maxBudget ? maxBudget : 'Any price',
+      }, {
+        email,
+        password,
+        fullName,
+        phone
       });
     }
   };
@@ -223,7 +228,13 @@ export function ZSignInPage({ onSignIn }: { onSignIn?: (filters?: any) => void }
                </div>
 
                <button 
-                 onClick={handleFinish} 
+                 onClick={() => {
+                   if (onDashboardLogin) {
+                     onDashboardLogin(email, password);
+                   } else {
+                     handleFinish();
+                   }
+                 }} 
                  disabled={!email || !password}
                  className={`w-full py-4 rounded-xl font-bold transition-all text-[16px] shadow-md mt-2 ${email && password ? 'bg-[#1A1A1A] hover:bg-black text-white' : 'bg-[#E0E6ED] text-[#A0B3C6] cursor-not-allowed'}`}
                >
@@ -233,7 +244,7 @@ export function ZSignInPage({ onSignIn }: { onSignIn?: (filters?: any) => void }
                <div className="mt-8 text-center border-t border-[#E0E6ED] pt-6">
                  <span className="text-[14px] text-[#567C8D]">{t("Don't have an account?")}</span>
                  <button onClick={() => setMode('onboarding')} className="ml-2 text-[14px] font-bold text-[#0054d6] hover:underline">
-                   {t('Start Exploring')}
+                   {t('Sign up')}
                  </button>
                </div>
            </div>
@@ -287,7 +298,7 @@ export function ZSignInPage({ onSignIn }: { onSignIn?: (filters?: any) => void }
                  <div className="mt-8 text-center border-t border-[#E0E6ED] pt-6">
                     <span className="text-[14px] text-[#567C8D]">{t("Already have an account?")}</span>
                     <button onClick={() => setMode('login')} className="ml-2 text-[14px] font-bold text-[#0054d6] hover:underline">
-                      {t('Log in here')}
+                      {t('Log in')}
                     </button>
                  </div>
                </div>
@@ -322,7 +333,7 @@ export function ZSignInPage({ onSignIn }: { onSignIn?: (filters?: any) => void }
                    <label className="text-[15px] font-bold text-[#1A1A1A]">{t('Optional: Set a rough range')}</label>
                    <div className="flex items-center gap-4">
                       <div className="relative flex-1">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#567C8D] font-medium">$</div>
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#567C8D] font-medium">RF</div>
                         <input 
                           type="number" 
                           value={minBudget}
@@ -333,7 +344,7 @@ export function ZSignInPage({ onSignIn }: { onSignIn?: (filters?: any) => void }
                       </div>
                       <span className="text-[#A0B3C6] font-medium">to</span>
                       <div className="relative flex-1">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#567C8D] font-medium">$</div>
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#567C8D] font-medium">RF</div>
                         <input 
                           type="number" 
                           value={maxBudget}

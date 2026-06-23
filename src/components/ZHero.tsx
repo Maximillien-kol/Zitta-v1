@@ -1,7 +1,9 @@
 import { Search, X } from 'lucide-react';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function ZHero({ onAction }: { onAction?: (action: string) => void }) {
+  const { t } = useTranslation();
   const [showOverlay, setShowOverlay] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -25,13 +27,13 @@ export function ZHero({ onAction }: { onAction?: (action: string) => void }) {
       
       <div className="relative z-10 flex flex-col items-center w-full px-4 sm:px-6">
         <h1 className="text-white text-[32px] sm:text-[44px] md:text-[52px] font-bold mb-6 sm:mb-8 text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] tracking-tight">
-          Rentals. Homes. Agents. Loans.
+          {t('Rentals. Homes. Agents. Loans.')}
         </h1>
         <form onSubmit={handleSearch} className="w-full max-w-[800px] bg-[#FFFFFF] rounded-lg flex items-center shadow-lg p-1">
           <input 
             type="text" 
             className="flex-1 pl-4 pr-2 py-3.5 outline-none text-[15px] sm:text-[17px] text-[#2F4156] placeholder:text-[#567C8D] rounded-l-lg bg-transparent font-medium" 
-            placeholder="Enter an address, neighborhood, city, or ZIP code" 
+            placeholder={t('Enter an address, neighborhood, city, or ZIP code')} 
           />
           <button type="submit" className="px-5 py-2 cursor-pointer text-[#2F4156] hover:text-[#567C8D] transition-colors bg-[#FFFFFF] rounded-r-lg flex items-center justify-center">
             <Search size={22} strokeWidth={2} />
@@ -48,20 +50,20 @@ export function ZHero({ onAction }: { onAction?: (action: string) => void }) {
             >
               <X size={24} />
             </button>
-            <h2 className="text-2xl font-bold text-[#2F4156] mb-2 text-center">What are you looking to do?</h2>
-            <p className="text-[#567C8D] mb-8 text-center">Choose an option to see the most relevant results for your search.</p>
+            <h2 className="text-2xl font-bold text-[#2F4156] mb-2 text-center">{t('What are you looking to do?')}</h2>
+            <p className="text-[#567C8D] mb-8 text-center">{t('Choose an option to see the most relevant results for your search.')}</p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button 
                 onClick={() => handleAction('Buy')}
                 className="flex-1 bg-[#567C8D] hover:bg-[#2F4156] text-white font-semibold py-3 px-6 rounded-lg transition-colors text-lg"
               >
-                Buy a home
+                {t('Buy a home')}
               </button>
               <button 
                 onClick={() => handleAction('Rent')}
                 className="flex-1 bg-[#FFFFFF] border-2 border-[#567C8D] text-[#567C8D] hover:bg-[#F5EFEB] font-semibold py-3 px-6 rounded-lg transition-colors text-lg"
               >
-                Rent a home
+                {t('Rent a home')}
               </button>
             </div>
           </div>

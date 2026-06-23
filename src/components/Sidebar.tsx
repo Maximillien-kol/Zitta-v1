@@ -22,15 +22,15 @@ export function Sidebar() {
           title="Price Range" 
           icon={<div className="w-[15px] h-[10px] rounded-[2px] border-[1.5px] border-current relative"><div className="absolute inset-0 m-auto w-1 h-1 rounded-full border border-current" /></div>}
         >
-           <Radio label="Under $1,000" />
-           <Radio label="$1,000 - $15,000" />
-           <Radio label="More Than $15,000" />
+           <Radio label="Under RF 1,000" />
+           <Radio label="RF 1,000 - RF 15,000" />
+           <Radio label="More Than RF 15,000" />
            <Radio label="Custom" checked={true} />
            
            <div className="px-1.5 py-4 pb-6 mt-1">
             <div className="flex justify-between text-[11px] font-medium text-gray-800 mb-2.5">
-              <span className="bg-white rounded-md px-2 py-1 shadow-sm border border-gray-100 min-w-[38px] text-center tracking-wide">$10K</span>
-              <span className="bg-white rounded-md px-2 py-1 shadow-sm border border-gray-100 min-w-[38px] text-center tracking-wide">$50K</span>
+              <span className="bg-white rounded-md px-2 py-1 shadow-sm border border-gray-100 min-w-[38px] text-center tracking-wide">RF 10K</span>
+              <span className="bg-white rounded-md px-2 py-1 shadow-sm border border-gray-100 min-w-[38px] text-center tracking-wide">RF 50K</span>
             </div>
             <div className="relative h-[5px] bg-[#E5E7EB] rounded-full mt-3">
               <div className="absolute left-[20%] right-[30%] h-full bg-blue-600"></div>
