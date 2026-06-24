@@ -184,7 +184,7 @@ export function ZInboxPage({ currentUser }: { currentUser?: { id: string; email:
               <div 
                 key={chat.id}
                 onClick={() => setActiveChatId(chat.id)}
-                className={`flex items-start gap-3 p-4 cursor-pointer transition-colors border-l-4 ${activeChatId === chat.id ? 'bg-[#F5EFEB]/50 border-[#0054d6]' : 'border-transparent hover:bg-[#F5EFEB]/30'}`}
+                className={`flex items-start gap-3 p-4 cursor-pointer transition-colors border-l-4 ${activeChatId === chat.id ? 'bg-[#F5EFEB]/50 border-[#0054d6]' : chat.unread > 0 ? 'bg-[#F5EFEB] border-transparent' : 'border-transparent hover:bg-[#F5EFEB]/30'}`}
               >
                 <div className="relative flex-shrink-0">
                   <img src={chat.clientImage || chat.agent_image} alt={chat.clientName || chat.agent_name} className="w-12 h-12 rounded-full object-cover" />

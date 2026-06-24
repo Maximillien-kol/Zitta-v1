@@ -193,7 +193,7 @@ export const api = {
   // --- MESSAGING SYSTEM API ---
 
   getConversations: async (userId: string, adminMode = false): Promise<any[]> => {
-    let query = supabase.from('conversations').select('*, property:property_id(title, image)');
+    let query = supabase.from('conversations').select('*, property:properties(title, image)');
     if (!adminMode) {
       query = query.or(`buyer_id.eq.${userId},agent_id.eq.${userId}`);
     }
