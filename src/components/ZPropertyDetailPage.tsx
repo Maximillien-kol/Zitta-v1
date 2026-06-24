@@ -8,16 +8,7 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Custom marker icon for property detail map
-const propertyMarkerIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
+// Using global Leaflet default icon fixed in main.tsx
 
 type CurrentUser = { id: string; email: string; role: 'admin' | 'user' } | null;
 
@@ -269,10 +260,10 @@ export function ZPropertyDetailPage({
                   zoomControl={true}
                 >
                   <TileLayer
-                    attribution='&copy; CARTO'
-                    url="https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
-                  <Marker position={[propLat, propLng]} icon={propertyMarkerIcon} />
+                  <Marker position={[propLat, propLng]} />
                 </MapContainer>
               </div>
             </div>

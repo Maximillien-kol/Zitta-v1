@@ -174,8 +174,8 @@ export function ZSearchPage({ onPropertyClick, savedPropertyIds = [], onToggleSa
                >
                   <MapResizer mapEnabled={mapEnabled} />
                   <TileLayer
-                    attribution='&copy; CARTO'
-                    url="https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     updateWhenIdle={true}
                     keepBuffer={2}
                   />
