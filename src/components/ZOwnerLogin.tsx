@@ -97,7 +97,7 @@ export function ZOwnerLogin({ onLogin, error }: ZOwnerLoginProps) {
               disabled={!email || !password || loading}
               className="w-full py-3.5 rounded-xl font-bold text-[15px] bg-[#567C8D] hover:bg-[#2F4156] text-white transition-colors mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? t('Signing in...') : t('Log in')}
+              {loading ? t('logging in...') : t('Log in')}
             </button>
           </form>
 
