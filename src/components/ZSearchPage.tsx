@@ -201,7 +201,10 @@ export function ZSearchPage({ onPropertyClick, savedPropertyIds = [], onToggleSa
                          closeButton={false}
                          minWidth={240}
                        >
-                          <div className="p-1 -m-1">
+                          <div 
+                             className="p-1 -m-1 cursor-pointer hover:opacity-90 transition-opacity"
+                             onClick={() => onPropertyClick?.(prop)}
+                          >
                              <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-2 relative">
                                <img src={prop.images[0]} className="w-full h-full object-cover" />
                              </div>
