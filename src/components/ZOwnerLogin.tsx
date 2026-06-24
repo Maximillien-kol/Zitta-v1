@@ -9,7 +9,7 @@ interface ZOwnerLoginProps {
   error?: string;
 }
 
-export function ZOwnerLogin({ onLogin, error: propError }: ZOwnerLoginProps) {
+export function ZOwnerLogin({ onLogin, error }: ZOwnerLoginProps) {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
