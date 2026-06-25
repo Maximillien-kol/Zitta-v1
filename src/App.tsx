@@ -186,7 +186,7 @@ export default function App() {
       <div className="flex flex-1 w-full overflow-hidden relative">
         <ZSideNav isAuthenticated={isAuthenticated} />
 
-        <div className="flex-1 md:ml-[80px] flex flex-col overflow-hidden">
+        <div className="flex-1 md:ml-[80px] flex flex-col overflow-hidden pb-[64px] md:pb-0">
           {isSearchPath && (
             <div className="sticky top-0 z-40 bg-white w-full">
               <ZFilterBar searchType={searchType} onSearchTypeChange={setSearchType} onFiltersChange={handleFiltersChange} />

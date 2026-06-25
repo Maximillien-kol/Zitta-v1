@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Search, Phone, Video, Info, Paperclip, Send, Smile, MessageSquare, AlertCircle } from 'lucide-react';
+import { Search, Phone, Video, Info, Paperclip, Send, Smile, MessageSquare, AlertCircle, ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '../services/api';
 import { supabase } from '../services/supabase';
@@ -103,8 +103,8 @@ export function ZInboxPage({ currentUser }: { currentUser?: { id: string; email:
     });
 
     return () => {
-      messageChannel.then((chan: any) => chan?.unsubscribe());
-      convChannel.then((chan: any) => chan?.unsubscribe());
+      messageChannel?.unsubscribe();
+      convChannel?.unsubscribe();
     };
   }, [activeChatId, userId]);
 
@@ -147,7 +147,7 @@ export function ZInboxPage({ currentUser }: { currentUser?: { id: string; email:
     <div className="flex h-full bg-[#FFFFFF] w-full overflow-hidden">
       
       {/* Left Sidebar - Chat List */}
-      <div className="w-full md:w-[350px] lg:w-[400px] flex-shrink-0 border-r border-[#E0E6ED] flex flex-col bg-white z-10 h-full">
+      <div className={`w-full md:w-[350px] lg:w-[400px] flex-shrink-0 border-r border-[#E0E6ED] flex flex-col bg-white z-10 h-full transition-all duration-300 ${activeChatId ? 'hidden md:flex' : 'flex'}`}>
         {/* Header */}
         <div className="p-4 md:p-6 border-b border-[#E0E6ED]">
           <div className="flex items-center justify-between mb-4">
@@ -211,13 +211,16 @@ export function ZInboxPage({ currentUser }: { currentUser?: { id: string; email:
       </div>
 
       {/* Right Area - Chat View */}
-      <div className={`flex-1 flex flex-col bg-[#F9FAFB] h-full ${activeChatId ? 'flex' : 'hidden md:flex items-center justify-center'}`}>
+      <div className={`flex-1 flex flex-col bg-[#F9FAFB] h-full absolute inset-0 md:static z-20 md:z-auto ${activeChatId ? 'flex' : 'hidden md:flex items-center justify-center'}`}>
         
         {currentChat ? (
           <>
             {/* Chat Header */}
-            <div className="h-[76px] px-6 border-b border-[#E0E6ED] bg-white flex items-center justify-between flex-shrink-0">
-              <div className="flex items-center gap-3">
+            <div className="h-[76px] px-4 md:px-6 border-b border-[#E0E6ED] bg-white flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-2 md:gap-3">
+                <button onClick={() => setActiveChatId(null)} className="md:hidden p-2 -ml-2 text-[#2F4156]">
+                  <ChevronLeft size={24} strokeWidth={2} />
+                </button>
                 <img src={currentChat.agent_image || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'} alt="Agent" className="w-10 h-10 rounded-full object-cover" />
                 <div>
                   <h2 className="font-bold text-[#1A1A1A] text-[16px] leading-tight">{currentChat.agent_name || 'Owner'}</h2>
@@ -317,7 +320,10 @@ export function ZInboxPage({ currentUser }: { currentUser?: { id: string; email:
             </form>
           </>
         ) : (
-          <div className="flex flex-col items-center text-center max-w-md mx-auto my-auto">
+          <div className="flex flex-col items-center text-center max-w-md mx-auto my-auto relative w-full h-full justify-center px-4">
+            <button onClick={() => setActiveChatId(null)} className="md:hidden absolute top-6 left-4 p-2 text-[#2F4156] bg-white rounded-full shadow-sm border border-[#E0E6ED]">
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-sm border border-[#E0E6ED] mb-6">
               <MessageSquare size={40} className="text-[#C8D9E6]" />
             </div>

@@ -125,8 +125,8 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
     });
 
     return () => {
-      messageChannel.then((chan: any) => chan?.unsubscribe());
-      convChannel.then((chan: any) => chan?.unsubscribe());
+      messageChannel?.unsubscribe();
+      convChannel?.unsubscribe();
     };
   }, [selectedConversation, userId]);
 
@@ -249,8 +249,8 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
   const renderStepper = () => {
     const steps = ['Basics', 'Location', 'Details', 'Amenities', 'Photos', 'Review'];
     return (
-      <div className="fixed inset-0 bg-black/30 z-50 flex items-start justify-end">
-        <div className="w-full max-w-[600px] h-full bg-white shadow-2xl flex flex-col overflow-hidden">
+      <div className="fixed inset-0 bg-black/40 z-[100] flex md:items-start justify-end sm:items-center sm:justify-center">
+        <div className="w-full h-[100dvh] md:max-w-[600px] md:h-full bg-white shadow-2xl flex flex-col overflow-hidden sm:rounded-2xl md:rounded-none md:rounded-l-2xl max-h-[100dvh]">
           {/* Header */}
           <div className="h-[80px] border-b border-[#F5EFEB] flex items-center justify-between px-6 flex-shrink-0">
             <button onClick={() => { setShowAddProperty(false); setAddStep(1); }} className="flex items-center gap-2 text-[#567C8D] hover:text-[#2F4156] font-medium text-[14px]">
@@ -316,7 +316,7 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
               <div className="flex flex-col gap-4">
                 <h3 className="text-[17px] font-bold text-[#1A1A1A]">Pick Location on Map</h3>
                 <p className="text-[13px] text-[#567C8D]">Click on the map to set the property pin</p>
-                <div className="rounded-2xl overflow-hidden border border-[#E0E6ED]" style={{ height: 380 }}>
+                <div className="rounded-2xl overflow-hidden border border-[#E0E6ED] h-[300px] md:h-[380px] w-full flex-shrink-0">
                   <MapContainer center={[lat, lng]} zoom={13} style={{ width: '100%', height: '100%' }}>
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     <Marker position={[lat, lng]} />
@@ -564,9 +564,9 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
   );
 
   const renderMessages = () => (
-    <div className="flex-1 overflow-hidden flex">
+    <div className="flex-1 overflow-hidden flex relative">
       {/* Conv list */}
-      <div className="w-[280px] flex-shrink-0 border-r border-[#F5EFEB] flex flex-col">
+      <div className={`flex-shrink-0 border-r border-[#F5EFEB] flex flex-col transition-all duration-300 ${selectedConversation ? 'hidden md:flex md:w-[280px]' : 'w-full md:w-[280px]'}`}>
         <div className="p-4 border-b border-[#F5EFEB]">
           <h2 className="font-bold text-[#1A1A1A] text-[16px] mb-3">Messages</h2>
           <div className="relative">
@@ -604,9 +604,12 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
 
       {/* Chat area */}
       {selectedConversation ? (
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden absolute inset-0 bg-white md:static z-20">
           {/* Chat header */}
           <div className="h-[65px] border-b border-[#F5EFEB] flex items-center px-5 gap-3 flex-shrink-0">
+            <button onClick={() => setSelectedConversation(null)} className="md:hidden p-2 -ml-2 text-[#2F4156]">
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
             {(() => {
               const conv = conversations.find(c => c.id === selectedConversation);
               return (
@@ -841,15 +844,15 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Sidebar — same 80px design as ZSideNav */}
-        <aside className="w-[80px] flex-shrink-0 bg-[#FFFFFF] border-r border-[#F5EFEB] flex flex-col items-center py-6 overflow-y-auto">
-          <div className="flex flex-col gap-1 w-full">
+        <aside className="fixed z-40 bg-[#FFFFFF] border-[#F5EFEB] flex w-full h-[64px] border-t bottom-0 left-0 right-0 flex-row items-center justify-around pb-[env(safe-area-inset-bottom)] md:static md:w-[80px] md:h-auto md:flex-shrink-0 md:border-t-0 md:border-r md:flex-col md:py-6 md:pb-6 md:overflow-y-auto">
+          <div className="flex flex-row w-full h-full justify-around items-center md:flex-col md:gap-1 md:h-auto">
             {sideItems.map(item => {
               const isActive = activeSection === item.id;
               return (
                 <button key={item.id} onClick={() => setActiveSection(item.id)}
-                  className={`flex flex-col items-center gap-1.5 w-full py-3 transition-colors group ${isActive ? 'bg-[#F5EFEB]' : 'hover:bg-[#F5EFEB]'}`}>
+                  className={`flex flex-col items-center justify-center w-full h-full gap-1 transition-colors group md:gap-1.5 md:py-3 md:h-auto ${isActive ? 'bg-[#F5EFEB] md:bg-[#F5EFEB]' : 'hover:bg-[#F5EFEB]'}`}>
                   <item.icon size={22} strokeWidth={isActive ? 2 : 1.5}
-                    className={`transition-colors ${isActive ? 'text-[#567C8D]' : 'text-[#2F4156] group-hover:text-[#567C8D]'}`} />
+                    className={`transition-colors md:mb-0 ${isActive ? 'text-[#567C8D]' : 'text-[#2F4156] group-hover:text-[#567C8D]'}`} />
                   <span className={`text-[10px] font-medium text-center leading-tight ${isActive ? 'text-[#567C8D]' : 'text-[#2F4156]'}`}>
                     {item.label}
                   </span>
@@ -857,7 +860,7 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
               );
             })}
           </div>
-          <div className="mt-auto w-full">
+          <div className="mt-auto hidden md:block w-full">
             <button onClick={onLogout}
               className="flex flex-col items-center gap-1.5 w-full py-3 text-[#E57373] hover:bg-red-50 transition-colors group">
               <LogOut size={22} strokeWidth={1.5} />
@@ -867,7 +870,7 @@ export function ZDashboardPage({ onLogout }: { onLogout?: () => void }) {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 overflow-hidden flex flex-col bg-[#FAFAFA]">
+        <main className="flex-1 overflow-hidden flex flex-col bg-[#FAFAFA] pb-[64px] md:pb-0">
           {activeSection === 'properties' && renderProperties()}
           {activeSection === 'messages' && renderMessages()}
           {activeSection === 'profile' && renderProfile()}

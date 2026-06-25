@@ -19,10 +19,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl,
 });
 
+import { ErrorBoundary } from './ErrorBoundary';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </BrowserRouter>
   </StrictMode>,
 );

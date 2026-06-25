@@ -209,7 +209,7 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
   };
 
   return (
-    <div ref={containerRef} className="flex items-center w-full px-4 md:px-6 py-[10px] border-b border-[#F5EFEB] bg-[#FFFFFF] gap-2.5 overflow-visible relative">
+    <div ref={containerRef} className="flex items-center w-full px-4 md:px-6 py-[10px] border-b border-[#F5EFEB] bg-[#FFFFFF] gap-2.5 overflow-x-auto md:overflow-visible relative [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
       {/* Search Input */}
       <div className="flex items-center border border-[#C8D9E6] rounded-lg px-3 py-1.5 flex-1 min-w-[220px] max-w-[550px] bg-[#FFFFFF] mr-1 shadow-[0_1px_2px_rgba(0,0,0,0.04)] h-[40px]">
@@ -240,14 +240,17 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
           {openDropdown === 'status' ? <ChevronUp size={18} strokeWidth={2.5} className="ml-0.5" /> : <ChevronDown size={18} strokeWidth={2.5} className="ml-0.5" />}
         </button>
         {openDropdown === 'status' && (
-          <div className="absolute top-[calc(100%+8px)] left-0 w-[240px] bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.15)] border border-[#E0E6ED] p-4 z-50">
-            <div className="flex flex-col gap-1 mb-4">
-              {statusOptions.map(opt => (
-                <RadioOption key={opt} label={opt} selected={tempStatus === opt} onClick={() => setTempStatus(opt)} />
-              ))}
+          <>
+            <div className="fixed inset-0 bg-black/20 z-[90] md:hidden" onClick={(e) => { e.stopPropagation(); setOpenDropdown(null); }} />
+            <div className="fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 w-full bg-white rounded-t-2xl p-4 pb-8 md:pb-4 z-[100] md:absolute md:top-[calc(100%+8px)] md:bottom-auto md:left-0 md:w-[240px] md:rounded-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] md:shadow-[0_4px_24px_rgba(0,0,0,0.15)] border-t md:border border-[#E0E6ED]">
+              <div className="flex flex-col gap-1 mb-4">
+                {statusOptions.map(opt => (
+                  <RadioOption key={opt} label={opt} selected={tempStatus === opt} onClick={() => setTempStatus(opt)} />
+                ))}
+              </div>
+              <button onClick={applyStatus} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
             </div>
-            <button onClick={applyStatus} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
-          </div>
+          </>
         )}
       </div>
 
@@ -261,14 +264,17 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
           {openDropdown === 'price' ? <ChevronUp size={18} strokeWidth={2.5} className="ml-0.5" /> : <ChevronDown size={18} strokeWidth={2.5} className="ml-0.5" />}
         </button>
         {openDropdown === 'price' && (
-          <div className="absolute top-[calc(100%+8px)] left-0 w-[240px] bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.15)] border border-[#E0E6ED] p-4 z-50">
-            <div className="flex flex-col gap-1 mb-4 max-h-[260px] overflow-y-auto pr-2">
-              {priceOptions.map(opt => (
-                <RadioOption key={opt} label={opt} selected={tempPrice === opt} onClick={() => setTempPrice(opt)} />
-              ))}
+          <>
+            <div className="fixed inset-0 bg-black/20 z-[90] md:hidden" onClick={(e) => { e.stopPropagation(); setOpenDropdown(null); }} />
+            <div className="fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 w-full bg-white rounded-t-2xl p-4 pb-8 md:pb-4 z-[100] md:absolute md:top-[calc(100%+8px)] md:bottom-auto md:left-0 md:w-[240px] md:rounded-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] md:shadow-[0_4px_24px_rgba(0,0,0,0.15)] border-t md:border border-[#E0E6ED]">
+              <div className="flex flex-col gap-1 mb-4 max-h-[40vh] md:max-h-[260px] overflow-y-auto pr-2">
+                {priceOptions.map(opt => (
+                  <RadioOption key={opt} label={opt} selected={tempPrice === opt} onClick={() => setTempPrice(opt)} />
+                ))}
+              </div>
+              <button onClick={applyPrice} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
             </div>
-            <button onClick={applyPrice} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
-          </div>
+          </>
         )}
       </div>
 
@@ -282,14 +288,17 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
           {openDropdown === 'beds' ? <ChevronUp size={18} strokeWidth={2.5} className="ml-0.5" /> : <ChevronDown size={18} strokeWidth={2.5} className="ml-0.5" />}
         </button>
         {openDropdown === 'beds' && (
-          <div className="absolute top-[calc(100%+8px)] left-0 w-[240px] bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.15)] border border-[#E0E6ED] p-4 z-50">
-            <div className="flex flex-col gap-1 mb-4">
-              {bedsOptions.map(opt => (
-                <RadioOption key={opt} label={opt} selected={tempBeds === opt} onClick={() => setTempBeds(opt)} />
-              ))}
+          <>
+            <div className="fixed inset-0 bg-black/20 z-[90] md:hidden" onClick={(e) => { e.stopPropagation(); setOpenDropdown(null); }} />
+            <div className="fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 w-full bg-white rounded-t-2xl p-4 pb-8 md:pb-4 z-[100] md:absolute md:top-[calc(100%+8px)] md:bottom-auto md:left-0 md:w-[240px] md:rounded-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] md:shadow-[0_4px_24px_rgba(0,0,0,0.15)] border-t md:border border-[#E0E6ED]">
+              <div className="flex flex-col gap-1 mb-4">
+                {bedsOptions.map(opt => (
+                  <RadioOption key={opt} label={opt} selected={tempBeds === opt} onClick={() => setTempBeds(opt)} />
+                ))}
+              </div>
+              <button onClick={applyBeds} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
             </div>
-            <button onClick={applyBeds} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
-          </div>
+          </>
         )}
       </div>
 
@@ -303,14 +312,17 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
           {openDropdown === 'type' ? <ChevronUp size={18} strokeWidth={2.5} className="ml-0.5" /> : <ChevronDown size={18} strokeWidth={2.5} className="ml-0.5" />}
         </button>
         {openDropdown === 'type' && (
-          <div className="absolute top-[calc(100%+8px)] left-0 w-[240px] bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.15)] border border-[#E0E6ED] p-4 z-50">
-            <div className="flex flex-col gap-1 mb-4">
-              {typeOptions.map(opt => (
-                <RadioOption key={opt} label={opt} selected={tempType === opt} onClick={() => setTempType(opt)} />
-              ))}
+          <>
+            <div className="fixed inset-0 bg-black/20 z-[90] md:hidden" onClick={(e) => { e.stopPropagation(); setOpenDropdown(null); }} />
+            <div className="fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 w-full bg-white rounded-t-2xl p-4 pb-8 md:pb-4 z-[100] md:absolute md:top-[calc(100%+8px)] md:bottom-auto md:left-0 md:w-[240px] md:rounded-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] md:shadow-[0_4px_24px_rgba(0,0,0,0.15)] border-t md:border border-[#E0E6ED]">
+              <div className="flex flex-col gap-1 mb-4 max-h-[40vh] md:max-h-none overflow-y-auto">
+                {typeOptions.map(opt => (
+                  <RadioOption key={opt} label={opt} selected={tempType === opt} onClick={() => setTempType(opt)} />
+                ))}
+              </div>
+              <button onClick={applyType} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
             </div>
-            <button onClick={applyType} className="w-full bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold py-2.5 rounded-lg transition-colors text-[15px]">{t('Apply')}</button>
-          </div>
+          </>
         )}
       </div>
 
@@ -329,68 +341,71 @@ export function ZFilterBar({ searchType = 'For sale', onSearchTypeChange, initia
           {openDropdown === 'filters' ? <ChevronUp size={18} strokeWidth={2.5} className="ml-0.5" /> : (activeFiltersCount > 0 ? <ChevronDown size={18} strokeWidth={2.5} className="ml-0.5" /> : null)}
         </button>
         {openDropdown === 'filters' && (
-          <div className="absolute top-[calc(100%+8px)] left-0 w-[350px] bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.15)] border border-[#E0E6ED] overflow-hidden z-50 flex flex-col max-h-[70vh]">
-            <div className="p-4 border-b border-[#E0E6ED] bg-[#F5EFEB] flex items-center justify-between sticky top-0 z-10">
-              <span className="font-bold text-[#2F4156] text-[16px]">{t('More Filters')}</span>
-              <button className="text-[#2F4156] hover:text-[#0054d6]" onClick={() => setOpenDropdown(null)}><X size={20} /></button>
+          <>
+            <div className="fixed inset-0 bg-black/20 z-[90] md:hidden" onClick={(e) => { e.stopPropagation(); setOpenDropdown(null); }} />
+            <div className="fixed bottom-[env(safe-area-inset-bottom)] left-0 right-0 w-full h-[85vh] md:h-auto bg-white rounded-t-2xl md:rounded-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.15)] md:shadow-[0_4px_24px_rgba(0,0,0,0.15)] border-t md:border border-[#E0E6ED] z-[100] md:absolute md:top-[calc(100%+8px)] md:bottom-auto md:left-0 md:w-[350px] flex flex-col md:max-h-[70vh] overflow-hidden">
+              <div className="p-4 border-b border-[#E0E6ED] bg-[#F5EFEB] flex items-center justify-between sticky top-0 z-10">
+                <span className="font-bold text-[#2F4156] text-[16px]">{t('More Filters')}</span>
+                <button className="text-[#2F4156] hover:text-[#0054d6]" onClick={() => setOpenDropdown(null)}><X size={20} /></button>
+              </div>
+
+              <div className="p-5 overflow-y-auto flex-1 flex flex-col gap-6">
+                <div className="flex flex-col gap-2">
+                  <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Max HOA')}</span>
+                  <select
+                    value={tempMaxHoa}
+                    onChange={(e) => setTempMaxHoa(e.target.value)}
+                    className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
+                  >
+                    <option value="Any">{t('Any')}</option>
+                    <option value="RF 100/mo">{t('RF 100/mo')}</option>
+                    <option value="RF 200/mo">{t('RF 200/mo')}</option>
+                    <option value="RF 300/mo">{t('RF 300/mo')}</option>
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing type')}</span>
+                  {allListingTypes.map(typ => (
+                    <CheckboxOption key={typ} label={typ} checked={tempListingTypes.includes(typ)} onChange={() => toggleArrayItem(tempListingTypes, setTempListingTypes, typ)} />
+                  ))}
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing status')}</span>
+                  {allListingStatuses.map(stat => (
+                    <CheckboxOption key={stat} label={stat} checked={tempListingStatuses.includes(stat)} onChange={() => toggleArrayItem(tempListingStatuses, setTempListingStatuses, stat)} />
+                  ))}
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Tours')}</span>
+                  {allTours.map(tour => (
+                    <CheckboxOption key={tour} label={tour} checked={tempTours.includes(tour)} onChange={() => toggleArrayItem(tempTours, setTempTours, tour)} />
+                  ))}
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Parking spots')}</span>
+                  <select
+                    value={tempParkingSpots}
+                    onChange={(e) => setTempParkingSpots(e.target.value)}
+                    className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
+                  >
+                    <option value="Any">{t('Any')}</option>
+                    <option value="1+ Spaces">{t('1+ Spaces')}</option>
+                    <option value="2+ Spaces">{t('2+ Spaces')}</option>
+                    <option value="3+ Spaces">{t('3+ Spaces')}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="p-4 pb-8 md:pb-4 border-t border-[#E0E6ED] flex items-center justify-between bg-white sticky bottom-0 z-10">
+                <button onClick={resetFilters} className="text-[15px] font-bold text-[#0054d6] hover:underline px-2">{t('Reset all filters')}</button>
+                <button onClick={applyFilters} className="bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold px-8 py-2.5 rounded-xl transition-colors text-[15px]">{t('Apply')}</button>
+              </div>
             </div>
-
-            <div className="p-5 overflow-y-auto flex-1 flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Max HOA')}</span>
-                <select
-                  value={tempMaxHoa}
-                  onChange={(e) => setTempMaxHoa(e.target.value)}
-                  className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
-                >
-                  <option value="Any">{t('Any')}</option>
-                  <option value="RF 100/mo">{t('RF 100/mo')}</option>
-                  <option value="RF 200/mo">{t('RF 200/mo')}</option>
-                  <option value="RF 300/mo">{t('RF 300/mo')}</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing type')}</span>
-                {allListingTypes.map(typ => (
-                  <CheckboxOption key={typ} label={typ} checked={tempListingTypes.includes(typ)} onChange={() => toggleArrayItem(tempListingTypes, setTempListingTypes, typ)} />
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Listing status')}</span>
-                {allListingStatuses.map(stat => (
-                  <CheckboxOption key={stat} label={stat} checked={tempListingStatuses.includes(stat)} onChange={() => toggleArrayItem(tempListingStatuses, setTempListingStatuses, stat)} />
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <span className="font-bold text-[#1A1A1A] text-[14px] mb-1">{t('Tours')}</span>
-                {allTours.map(tour => (
-                  <CheckboxOption key={tour} label={tour} checked={tempTours.includes(tour)} onChange={() => toggleArrayItem(tempTours, setTempTours, tour)} />
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <span className="font-bold text-[#1A1A1A] text-[14px]">{t('Parking spots')}</span>
-                <select
-                  value={tempParkingSpots}
-                  onChange={(e) => setTempParkingSpots(e.target.value)}
-                  className="w-full border border-[#C8D9E6] rounded-lg p-2.5 text-[15px] text-[#2F4156] outline-none focus:border-[#0054d6] focus:ring-1 focus:ring-[#0054d6]"
-                >
-                  <option value="Any">{t('Any')}</option>
-                  <option value="1+ Spaces">{t('1+ Spaces')}</option>
-                  <option value="2+ Spaces">{t('2+ Spaces')}</option>
-                  <option value="3+ Spaces">{t('3+ Spaces')}</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="p-4 border-t border-[#E0E6ED] flex items-center justify-between bg-white sticky bottom-0 z-10">
-              <button onClick={resetFilters} className="text-[15px] font-bold text-[#0054d6] hover:underline px-2">{t('Reset all filters')}</button>
-              <button onClick={applyFilters} className="bg-[#0054d6] hover:bg-[#004bbd] text-white font-bold px-8 py-2.5 rounded-xl transition-colors text-[15px]">{t('Apply')}</button>
-            </div>
-          </div>
+          </>
         )}
       </div>
 
