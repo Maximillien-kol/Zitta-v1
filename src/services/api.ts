@@ -347,13 +347,16 @@ export const api = {
 };
 
 // Helper mappers to match the database schema with the frontend types
-function mapToProperty(row: any): Property {
+function mapToProperty(row: any): any {
   return {
     id: row.id,
+    title: row.title || row.address,
     price: Number(row.price),
-    beds: row.beds,
-    baths: row.baths,
-    sqft: row.sqft,
+    beds: row.beds || row.bedrooms || 0,
+    bedrooms: row.bedrooms || row.beds || 0,
+    baths: row.baths || 0,
+    rooms: row.rooms || (row.beds + row.baths),
+    sqft: row.sqft || 0,
     status: row.status,
     address: row.address,
     mlsId: row.mls_id,
@@ -361,6 +364,15 @@ function mapToProperty(row: any): Property {
     badgeText: row.badge_text,
     badgeType: row.badge_type,
     image: row.image || (row.images && row.images.length > 0 ? row.images[0] : ''),
+    images: row.images && row.images.length > 0 ? row.images : (row.image ? [row.image] : []),
+    lat: Number(row.lat) || 0,
+    lng: Number(row.lng) || 0,
+    description: row.description || '',
+    propertyType: row.property_type || '',
+    property_type: row.property_type || '',
+    yearBuilt: row.year_built || null,
+    lotSize: row.lot_size || '',
+    amenities: row.amenities || [],
     owner_id: row.owner_id
   };
 }
